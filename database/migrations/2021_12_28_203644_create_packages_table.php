@@ -22,7 +22,7 @@ class CreatePackagesTable extends Migration
             $table->boolean('bracelet')->default(false);
             $table->double('amount', 8, 2);
             $table->boolean('paid')->default(false);
-            $table->string('admin_name')->nullable();
+            $table->foreignIdFor(User::class)->nullable();
             $table->timestamp('verified_at')->nullable();
             $table->timestamps();
         });
