@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PackageController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,10 +20,14 @@ Route::get('/', [HomeController::class, 'index']);
 
 Route::get('/login', [HomeController::class, 'login']);
 
-Route::post('/login', [HomeController::class, 'doLogin']);
+Route::post('/login', [LoginController::class, 'login']);
+
+Route::get('/logout', [LoginController::class, 'logout']);
 
 Route::get('/package/create', [PackageController::class, 'showCreate']);
 
 Route::post('/package/create', [PackageController::class, 'doCreate']);
 
-Route::get('/package/view/{id}', [PackageController::class, 'view']);
+Route::get('/package/view', [PackageController::class, 'find']);
+
+Route::post('/package/view', [PackageController::class, 'view']);

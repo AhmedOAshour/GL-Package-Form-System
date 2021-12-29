@@ -3,10 +3,11 @@
 @section('title', 'Package Form')
 
 @section('content')
-<a href="/login">Log In</a>
+<a href="/login">Log In</a> <br><br>
 
 @if (isset($submit))
     <h2>Form Submitted!</h2>
+    <h3>Your Serial number is {{$serial_number}} <br>Please save it</h3>
 @endif
 
 @if ($errors->any())
@@ -36,7 +37,7 @@
         <label for="bracelet">Bracelet</label> <br>
     </div> <br>
     
-    Amount: <p id='amount'>JS to be added</p>  <br>
-    <button type="submit">Submit</button>
+    Amount: <span id='amount'>JS to be added</span>  <br><br>
+    <button type="submit">Checkout</button>
 </form>
 @endsection

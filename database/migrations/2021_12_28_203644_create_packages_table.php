@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Models\User;
 
 class CreatePackagesTable extends Migration
 {
@@ -15,6 +16,7 @@ class CreatePackagesTable extends Migration
     {
         Schema::create('packages', function (Blueprint $table) {
             $table->id();
+            $table->string('serial_number', 6)->unique();
             $table->string('member_name');
             $table->string('member_id')->unique();
             $table->boolean('tshirt')->default(false);

@@ -4,17 +4,34 @@ namespace App\Http\Controllers;
 
 use App\Models\Package;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PackageController extends Controller
 {
-    public function view($id){
-        $package = Package::findOrFail($id);
+    public function view(Request $request){
+        $validated = $request->validate(['serial_number' => ['required','exists:packages']]);
+        
+        if($request->has('verify'))
+            $this->verify($request);
+        elseif($request->has('unverify'))
+            $this->unverify($request);
+        
+        $package = Package::where('serial_number',$request->serial_number)->firstOrFail();
+        
+        $user = DB::table('users')->select('username')->where('id',$package->user_id)->first();
+        if($user)
+            $package->username = $user->username;
+        if($package)
+            return view('/package/view', ['package'=> $package]);
+        else
+            $this->find();
+    }
 
-        return view('view', ['package'=> $package]);
+    public function find(){
+        return view('/package/view');
     }
 
     public function showCreate(Request $request){
-
         return view('/package/create');
     }
 
@@ -43,10 +60,30 @@ class PackageController extends Controller
             $amount += 100;
 
         $package->amount = $amount;
+        
+        $valid_chars = range(0,9);
+        $rand_serial = implode('', array_rand($valid_chars, 6));
+
+        $package->serial_number = $rand_serial;
+
         $package->save();
 
-        
+        return view('/package/create',[
+            'submit'=>true,
+            'serial_number'=>$rand_serial]);
+    }
 
-        return view('/package/create',['submit'=>true]);
+    public function verify(Request $request){
+        $affected = DB::update(
+            'update packages set verified_at = NOW(), user_id = ? where serial_number = ?',
+            [session()->get('id'),$request->serial_number]
+        );
+    }
+
+    public function unverify(Request $request){
+        $affected = DB::update(
+            'update packages set verified_at = NULL, user_id = NULL where serial_number = ?',
+            [$request->serial_number]
+        );
     }
 }
